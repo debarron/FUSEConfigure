@@ -5,7 +5,9 @@ USER_NAME="$2"
 PRIVATE_KEY="$3"
 
 script="
-export PATH=\"\$HOME/.local/bin:\$PATH\"
+export PATH=/users/dl544/.local/bin:\$PATH
+echo \$PATH
+sleep 30
 cd \$HOME
 sudo apt-get install -y python3-pip
 pip3 install --user ninja meson
@@ -27,8 +29,8 @@ echo ">> FUSE CONFIGURE "
 bp_list=""
 for machine in $(cat $MACHINES)
 do
-  ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script" > /dev/null &
-  #ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script"
+  #ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script" > /dev/null &
+  ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script"
   bp_list="$bp_list $!"
   echo -e "\t + $machine ADDED :)"
 done
