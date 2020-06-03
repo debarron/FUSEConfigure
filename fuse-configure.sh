@@ -17,7 +17,7 @@ mkdir -p fuse/build
 cd fuse/build
 meson ..
 ninja
-sudo ninja install
+sudo \$HOME/.local/bin/ninja install
 for i in '/lib' '/usr/lib' '/usr/local/lib'
 do 
   sudo ln -s /usr/local/lib/x86_64-linux-gnu/libfuse3.so \$i/libfuse3.so.3
