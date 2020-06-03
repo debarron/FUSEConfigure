@@ -7,13 +7,14 @@ PRIVATE_KEY="$3"
 script="
 export PATH=/users/dl544/.local/bin:\$PATH
 echo \$PATH
-sleep 30
 cd \$HOME
 sudo apt-get install -y python3-pip
 pip3 install --user ninja meson
-wget https://github.com/libfuse/libfuse/releases/download/fuse-3.6.2/fuse-3.6.2.tar.xz -O fuse.tar.xz
-mkdir fuse && tar -xvf fuse.tar.xz -C fuse --strip-components 1 && rm fuse.tar.xz
-cd fuse && mkdir build && cd build
+wget https://github.com/libfuse/libfuse/releases/download/fuse-3.6.2/fuse-3.6.2.tar.xz
+tar -xvf fuse-3.6.2.tar.xz
+mv fuse-3.6.2 fuse
+mkdir -p fuse/build
+cd fuse/build
 meson ..
 ninja
 sudo ninja install
@@ -31,39 +32,39 @@ for machine in $(cat $MACHINES)
 do
   #ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script" > /dev/null &
   ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script"
-  bp_list="$bp_list $!"
-  echo -e "\t + $machine ADDED :)"
+  echo -e "\t + $machine FINISHED :)"
 done
 
-echo -e "\nWAITING FOR SETUP TO FINISH..\n"
-TOTAL=$(cat $MACHINES | wc -l | sed 's/ //g')
-DATE=$(date| tr '[:lower:]' '[:upper:]')
-echo $DATE
-echo -e "CHECKING PIDS STATUS.."
-FINISHED=1
-while [[ $FINISHED -gt 0 ]]; do
-	FINISHED=$TOTAL
-	
-  states=""
-	for pid in $bp_list; do 
-		state=$(ps -o state $pid  |tail -n +2)
-		states="$states $state"
-		if [[ ${#state} -eq 0 ]]; then
-			FINISHED=$((FINISHED-1))
-		fi;
-	done;
-	
-  #echo $states
-  echo "REMAINING: "$FINISHED"/"$TOTAL
-	states=${states// /}
-	if [[ ${#states} -gt 0 ]]; then
-		sleep 30
-	fi
-done;
 
-DATE=$(date| tr '[:lower:]' '[:upper:]')
-echo $DATE
-wait
-
-echo ">> WORK IS DONE 🥃"
-exit 0
+#echo -e "\nWAITING FOR SETUP TO FINISH..\n"
+#TOTAL=$(cat $MACHINES | wc -l | sed 's/ //g')
+#DATE=$(date| tr '[:lower:]' '[:upper:]')
+#echo $DATE
+#echo -e "CHECKING PIDS STATUS.."
+#FINISHED=1
+#while [[ $FINISHED -gt 0 ]]; do
+#	FINISHED=$TOTAL
+#	
+#  states=""
+#	for pid in $bp_list; do 
+#		state=$(ps -o state $pid  |tail -n +2)
+#		states="$states $state"
+#		if [[ ${#state} -eq 0 ]]; then
+#			FINISHED=$((FINISHED-1))
+#		fi;
+#	done;
+#	
+#  #echo $states
+#  echo "REMAINING: "$FINISHED"/"$TOTAL
+#	states=${states// /}
+#	if [[ ${#states} -gt 0 ]]; then
+#		sleep 30
+#	fi
+#done;
+#
+#DATE=$(date| tr '[:lower:]' '[:upper:]')
+#echo $DATE
+#wait
+#
+#echo ">> WORK IS DONE 🥃"
+#exit 0
