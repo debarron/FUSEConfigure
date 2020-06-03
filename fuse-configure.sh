@@ -5,7 +5,7 @@ USER_NAME="$2"
 PRIVATE_KEY="$3"
 
 script="
-export PATH=/users/dl544/.local/bin:\$PATH
+export PATH=\$HOME/.local/bin:\$PATH
 echo \$PATH
 cd \$HOME
 sudo apt-get install -y python3-pip
