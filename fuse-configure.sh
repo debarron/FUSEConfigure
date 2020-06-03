@@ -27,8 +27,8 @@ echo ">> FUSE CONFIGURE "
 bp_list=""
 for machine in $(cat $MACHINES)
 do
-  #ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script" > /dev/null &
-  ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script"
+  ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script" > /dev/null &
+  #ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script"
   bp_list="$bp_list $!"
   echo -e "\t + $machine ADDED :)"
 done
