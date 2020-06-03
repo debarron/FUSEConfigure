@@ -5,15 +5,14 @@ USER_NAME="$2"
 PRIVATE_KEY="$3"
 
 script="
-export PATH=\"/usr/bin/:\"\$PATH
+export PATH=\"\$HOME/.local/bin:\$PATH\"
 cd \$HOME
-sudo apt-get install -y python3-pip ninja-build
-pip3 install --user meson
-wget https://github.com/libfuse/libfuse/releases/download/fuse-3.6.2/fuse-3.6.2.tar.xz
-tar -xvf fuse-3.6.2.tar.xz
-cd fuse-3.6.2
-mkdir build; cd build
-\$HOME/.local/bin/meson ..
+sudo apt-get install -y python3-pip
+pip3 install --user ninja meson
+wget https://github.com/libfuse/libfuse/releases/download/fuse-3.6.2/fuse-3.6.2.tar.xz -O fuse.tar.xz
+mkdir fuse && tar -xvf fuse.tar.xz -C fuse --strip-components 1 && rm fuse.tar.xz
+cd fuse && mkdir build && cd build
+meson ..
 ninja
 sudo ninja install
 for i in '/lib' '/usr/lib' '/usr/local/lib'
@@ -28,13 +27,14 @@ echo ">> FUSE CONFIGURE "
 bp_list=""
 for machine in $(cat $MACHINES)
 do
-  ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script" > /dev/null &
+  #ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script" > /dev/null &
+  ssh -i $PRIVATE_KEY -o "StrictHostKeyChecking no" $USER_NAME@$machine "$script"
   bp_list="$bp_list $!"
   echo -e "\t + $machine ADDED :)"
 done
 
 echo -e "\nWAITING FOR SETUP TO FINISH..\n"
-TOTAL=$(cat $MACHINES | wc -l | sed 's/ //')
+TOTAL=$(cat $MACHINES | wc -l | sed 's/ //g')
 DATE=$(date| tr '[:lower:]' '[:upper:]')
 echo $DATE
 echo -e "CHECKING PIDS STATUS.."
