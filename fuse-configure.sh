@@ -9,7 +9,8 @@ export PATH=\$HOME/.local/bin:\$PATH
 echo \$PATH
 cd \$HOME
 sudo apt-get install -y python3-pip
-pip3 install --user ninja meson
+pip3 install --user ninja
+pip3 install --user meson==0.55
 wget https://github.com/libfuse/libfuse/releases/download/fuse-3.6.2/fuse-3.6.2.tar.xz
 tar -xvf fuse-3.6.2.tar.xz
 mv fuse-3.6.2 fuse
